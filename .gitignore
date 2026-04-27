@@ -2,6 +2,7 @@
 build/
 out/
 cmake-build-*/
+bin/
 
 # CMake generated files
 CMakeCache.txt
