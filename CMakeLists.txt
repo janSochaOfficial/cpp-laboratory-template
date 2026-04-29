@@ -198,7 +198,27 @@ macro(link_to_bin target_name)
 endmacro()
 
 
-file(GLOB SOURCES CONFIGURE_DEPENDS "${CMAKE_SOURCE_DIR}/src/task[1-9].cpp")
+# ── Library ────────────────────────────────────────────────────────────────────
+add_library(mylib STATIC
+    "${CMAKE_SOURCE_DIR}/src/ExampleClass.cpp"
+)
+
+target_include_directories(mylib PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include>
+    $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
+)
+
+
+target_compile_options(mylib PRIVATE ${COMMON_FLAGS})
+target_link_options(mylib PUBLIC ${COMMON_LINK_FLAGS})
+
+if(DEFINED SANITIZER_FLAGS AND SANITIZER_FLAGS)
+    target_compile_options(mylib PRIVATE ${SANITIZER_FLAGS})
+    target_link_options(mylib PUBLIC ${SANITIZER_FLAGS})
+endif()
+
+
+file(GLOB SOURCES CONFIGURE_DEPENDS "${CMAKE_SOURCE_DIR}/src/*_exec.cpp")
 
 foreach(SOURCE ${SOURCES})
     get_filename_component(TARGET_NAME ${SOURCE} NAME_WE)
