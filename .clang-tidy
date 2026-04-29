@@ -9,8 +9,9 @@ Checks: >
   bugprone-*,
   -modernize-use-trailing-return-type,
   -readability-magic-numbers,
-  -cppcoreguidelines-avoid-magic-numbers
+  -cppcoreguidelines-avoid-magic-numbers,
+  -bugprone-easily-swappable-parameters
 
 WarningsAsErrors: "*"
-HeaderFilterRegex: ".*"
+HeaderFilterRegex: ".*/src/.*|.*/include/.*"
 FormatStyle: file

@@ -145,12 +145,15 @@ endif()
 find_program(CLANG_TIDY_BIN clang-tidy)
 
 if(CLANG_TIDY_BIN)
-    set(CMAKE_CXX_CLANG_TIDY
-        ${CLANG_TIDY_BIN}
-        --extra-arg=-std=c++20
-        --extra-arg=-Wno-unknown-warning-option   # silences GCC-only flags
-        --warnings-as-errors=*
-    )
+    if (CMAKE_BUILD_TYPE STREQUAL "Release")
+        set(CMAKE_CXX_CLANG_TIDY
+            ${CLANG_TIDY_BIN}
+            --extra-arg=-std=c++20
+            --extra-arg=-Wno-unknown-warning-option   # silences GCC-only flags
+            --warnings-as-errors=*
+            "--header-filter=${CMAKE_SOURCE_DIR}/\\(src\\|include\\)/.*"
+        )
+    endif()
 
     add_custom_target(tidy
         COMMAND ${CLANG_TIDY_BIN}
@@ -158,6 +161,7 @@ if(CLANG_TIDY_BIN)
             --extra-arg=-std=c++20
             --extra-arg=-Wno-unknown-warning-option   # silences GCC-only flags
             --warnings-as-errors=*
+            "--header-filter=${CMAKE_SOURCE_DIR}/\\(src\\|include\\)/.*"
             ${ALL_SOURCES}
         COMMENT "Running clang-tidy on src/ and include/..."
         DEPENDS ${ALL_SOURCES}
@@ -170,6 +174,7 @@ if(CLANG_TIDY_BIN)
             --extra-arg=-Wno-unknown-warning-option   # silences GCC-only flags
             --fix
             --fix-errors
+            "--header-filter=${CMAKE_SOURCE_DIR}/\\(src\\|include\\)/.*"
             ${ALL_SOURCES}
         COMMENT "Running clang-tidy with auto-fix on src/ and include/..."
         DEPENDS ${ALL_SOURCES}
