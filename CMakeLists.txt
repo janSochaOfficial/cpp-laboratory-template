@@ -172,7 +172,7 @@ if(CLANG_TIDY_BIN)
             --extra-arg=-std=c++20
             --extra-arg=-Wno-unknown-warning-option   # silences GCC-only flags
             --warnings-as-errors=*
-            "--header-filter=${CMAKE_SOURCE_DIR}/\\(src\\|include\\)/.*"
+            "--header-filter=${CMAKE_SOURCE_DIR}/\\(src\\|include\\|tests\\)/.*"
         )
     endif()
 
@@ -182,9 +182,9 @@ if(CLANG_TIDY_BIN)
             --extra-arg=-std=c++20
             --extra-arg=-Wno-unknown-warning-option   # silences GCC-only flags
             --warnings-as-errors=*
-            "--header-filter=${CMAKE_SOURCE_DIR}/\\(src\\|include\\)/.*"
+            "--header-filter=${CMAKE_SOURCE_DIR}/\\(src\\|include\\)|tests\\/.*"
             ${ALL_SOURCES}
-        COMMENT "Running clang-tidy on src/ and include/..."
+        COMMENT "Running clang-tidy on src/, include/ and tests/..."
         DEPENDS ${ALL_SOURCES}
     )
 
@@ -195,9 +195,9 @@ if(CLANG_TIDY_BIN)
             --extra-arg=-Wno-unknown-warning-option   # silences GCC-only flags
             --fix
             --fix-errors
-            "--header-filter=${CMAKE_SOURCE_DIR}/\\(src\\|include\\)/.*"
+            "--header-filter=${CMAKE_SOURCE_DIR}/\\(src\\|include\\|tests\\)/.*"
             ${ALL_SOURCES}
-        COMMENT "Running clang-tidy with auto-fix on src/ and include/..."
+        COMMENT "Running clang-tidy with auto-fix on src/, include/ and tests/..."
         DEPENDS ${ALL_SOURCES}
     )
 else()

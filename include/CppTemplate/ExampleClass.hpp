@@ -8,7 +8,7 @@
 
 class ExampleClass {
 public:
-    ExampleClass();
+    ExampleClass() = default;
     static void print(std::ostream &outstr);
 
 
