@@ -1,13 +1,33 @@
 cmake_minimum_required(VERSION 3.16)
 
-project(Laboratory7 CXX)
+project(CppTemplate CXX)
+
+include(FetchContent)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 set(CMAKE_CXX_EXTENSIONS OFF)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Release CACHE STRING "Build type" FORCE)
+endif()
+
+option(BUILD_TESTS "Build unit tests" ON)
+
+
+if(BUILD_TESTS)
+    include(FetchContent)
+ 
+    FetchContent_Declare(
+    googletest
+    GIT_REPOSITORY https://github.com/google/googletest.git
+    GIT_TAG        v1.15.2  # pin to a release
+    )
+
+    set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+    FetchContent_MakeAvailable(googletest)
+    enable_testing()
 endif()
 
 # ─── Warning & hardening flags ────────────────────────────────────────────────
@@ -105,13 +125,14 @@ if(CMAKE_BUILD_TYPE STREQUAL "Debug" AND NOT MSVC)
     )
 endif()
 
-# ─── Source files (src/ and include/ only) ────────────────────────────────────
+# ─── Source files ──────────────────────────────────────────────────────────────
 file(GLOB_RECURSE ALL_SOURCES CONFIGURE_DEPENDS
     "${CMAKE_SOURCE_DIR}/src/*.cpp"
     "${CMAKE_SOURCE_DIR}/src/*.h"
     "${CMAKE_SOURCE_DIR}/src/*.hpp"
     "${CMAKE_SOURCE_DIR}/include/*.h"
     "${CMAKE_SOURCE_DIR}/include/*.hpp"
+    "${CMAKE_SOURCE_DIR}/tests/*.cpp"
 )
 
 # ─── clang-format ─────────────────────────────────────────────────────────────
@@ -199,22 +220,22 @@ endmacro()
 
 
 # ── Library ────────────────────────────────────────────────────────────────────
-add_library(mylib STATIC
+add_library(CppTemplate STATIC
     "${CMAKE_SOURCE_DIR}/src/ExampleClass.cpp"
 )
 
-target_include_directories(mylib PUBLIC
+target_include_directories(CppTemplate PUBLIC
     $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include>
     $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
 )
 
 
-target_compile_options(mylib PRIVATE ${COMMON_FLAGS})
-target_link_options(mylib PUBLIC ${COMMON_LINK_FLAGS})
+target_compile_options(CppTemplate PRIVATE ${COMMON_FLAGS})
+target_link_options(CppTemplate PUBLIC ${COMMON_LINK_FLAGS})
 
 if(DEFINED SANITIZER_FLAGS AND SANITIZER_FLAGS)
-    target_compile_options(mylib PRIVATE ${SANITIZER_FLAGS})
-    target_link_options(mylib PUBLIC ${SANITIZER_FLAGS})
+    target_compile_options(CppTemplate PRIVATE ${SANITIZER_FLAGS})
+    target_link_options(CppTemplate PUBLIC ${SANITIZER_FLAGS})
 endif()
 
 
@@ -233,3 +254,8 @@ foreach(SOURCE ${SOURCES})
     endif()
 
 endforeach()
+
+
+if (BUILD_TESTS)
+    add_subdirectory(tests)
+endif()

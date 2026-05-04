@@ -1,10 +1,6 @@
-#include <stdexcept>
 #include "CppTemplate/ExampleClass.hpp"
+#include <stdexcept>
 
-ExampleClass::ExampleClass() {
-    throw std::runtime_error("Not implemented: ExampleClass");
-}
+ExampleClass::ExampleClass() {}
 
-void ExampleClass::print(std::ostream &outstr) {
-    outstr << "Hello Worlds";
-}
+void ExampleClass::print(std::ostream &outstr) { outstr << "Hello Worlds"; }
